@@ -15,6 +15,7 @@ A Java command-line calculator supporting basic arithmetic, power, and modulo op
 
 - [Lab 4 Technical Report (English)](docs/LAB4_REPORT_EN.md): Contains requirement matrices, test suite design, and JaCoCo coverage metrics.
 - [Lab 4 实验报告 (中文)](docs/LAB4_REPORT.md): 包含需求实现对照表、测试用例分布与 JaCoCo 覆盖率统计。
+- [Screenshots](docs/screenshots/): Contains test execution, error handling, and coverage screenshots.
 
 ---
 

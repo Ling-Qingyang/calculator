@@ -15,6 +15,7 @@ Java 命令行计算器，支持四则运算、乘方与取模，包含异常处
 
 - [实验 4 实验报告（中文）](docs/LAB4_REPORT.md)：包含需求实现对照表、测试用例分布与 JaCoCo 覆盖率统计。
 - [Lab 4 Technical Report (English)](docs/LAB4_REPORT_EN.md)：英文技术报告。
+- [实验过程截图](docs/screenshots/)：包含测试运行、异常抛出与 JaCoCo 覆盖率页面截图。
 
 ---
 

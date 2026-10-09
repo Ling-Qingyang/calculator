@@ -33,6 +33,8 @@
 2. **除以零测试**：
    - 输入 `/ 0`、`/ 0.0`、`/ -0.0`、`% 0`、`% 0.0`。
    - 抛出 `IllegalArgumentException`，信息为 `"division by zero"`。
+   - 终端除零运行捕获：
+     ![除以零异常截图](screenshots/01_division_by_zero.png)
 
 3. **参数化测试**：
    - `@ParameterizedTest` + `@CsvSource`：10 组四则及乘方取模运算用例。
@@ -57,6 +59,14 @@
 | `com.lingqingyang.App` | 100% (31/31) | 100% (2/2) | 100% (8/8) | 100% (3/3) | 100% (2/2) |
 | **总计** | **100% (129/129)** | **100% (19/19)** | **100% (30/30)** | **100% (16/16)** | **100% (4/4)** |
 
+### 覆盖率截图
+
+- JaCoCo 覆盖率总览：
+  ![JaCoCo覆盖率总览](screenshots/03_jacoco_overview.png)
+
+- Calculator 类覆盖详情：
+  ![Calculator覆盖详情](screenshots/04_calculator_coverage.png)
+
 ---
 
 ## 4. 验证命令与输出
@@ -66,6 +76,9 @@
    mvn clean test
    ```
    输出：`Tests run: 32, Failures: 0, Errors: 0, Skipped: 0`。
+
+   - 测试执行通过终端截图：
+     ![测试通过终端截图](screenshots/02_all_tests_pass.png)
 
 2. 打包与执行：
    ```bash
