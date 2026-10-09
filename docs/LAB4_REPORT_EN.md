@@ -86,3 +86,6 @@ Report path: `target/site/jacoco/index.html`
    java -jar target/calculator-1.0.jar 2 + 2
    ```
    Output: `4.0`.
+
+   - Terminal CLI Packaging & Execution Screenshot:
+     ![CLI Execution Output](screenshots/05_cli_execution.png)

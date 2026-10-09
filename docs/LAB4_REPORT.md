@@ -86,3 +86,6 @@
    java -jar target/calculator-1.0.jar 2 + 2
    ```
    输出：`4.0`。
+
+   - 命令行打包运行终端截图：
+     ![命令行运行结果](screenshots/05_cli_execution.png)
