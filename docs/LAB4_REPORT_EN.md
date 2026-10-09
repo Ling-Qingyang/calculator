@@ -33,6 +33,8 @@ Test classes: `CalculatorTest.java` (29 tests), `AppTest.java` (3 tests), total 
 2. **Divide by Zero**:
    - Inputs `/ 0`, `/ 0.0`, `/ -0.0`, `% 0`, `% 0.0`.
    - Throws `IllegalArgumentException` with message `"division by zero"`.
+   - Terminal exception output:
+     ![Divide by Zero Exception](screenshots/01_division_by_zero.png)
 
 3. **Parameterized Tests**:
    - `@ParameterizedTest` + `@CsvSource`: 10 arithmetic cases.
@@ -57,6 +59,14 @@ Report path: `target/site/jacoco/index.html`
 | `com.lingqingyang.App` | 100% (31/31) | 100% (2/2) | 100% (8/8) | 100% (3/3) | 100% (2/2) |
 | **Total** | **100% (129/129)** | **100% (19/19)** | **100% (30/30)** | **100% (16/16)** | **100% (4/4)** |
 
+### Coverage Screenshots
+
+- JaCoCo Overview:
+  ![JaCoCo Overview](screenshots/03_jacoco_overview.png)
+
+- Calculator Coverage Details:
+  ![Calculator Coverage Details](screenshots/04_calculator_coverage.png)
+
 ---
 
 ## 4. Execution Commands and Outputs
@@ -66,6 +76,9 @@ Report path: `target/site/jacoco/index.html`
    mvn clean test
    ```
    Output: `Tests run: 32, Failures: 0, Errors: 0, Skipped: 0`.
+
+   - Terminal Test Execution Screenshot:
+     ![All Tests Pass Screenshot](screenshots/02_all_tests_pass.png)
 
 2. Package and execute jar:
    ```bash
