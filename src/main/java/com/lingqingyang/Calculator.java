@@ -22,7 +22,7 @@ public class Calculator {
         }
 
         return switch (op.trim()) {
-            case "+" -> x + y;
+            case "+" -> x - y; // INTENTIONAL DEFECT: deliberate arithmetic regression to test CI failure gate
             case "-" -> x - y;
             case "*" -> x * y;
             case "/" -> {
