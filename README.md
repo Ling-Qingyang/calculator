@@ -1,57 +1,46 @@
-# CLI Calculator (Lab 3 & Lab 4)
+# Java Calculator Application
 
-[English](README.md) | [中文说明](README_zh.md)
+[![Calculator CI Pipeline](https://github.com/Ling-Qingyang/calculator/actions/workflows/ci-calculator.yml/badge.svg)](https://github.com/Ling-Qingyang/calculator/actions/workflows/ci-calculator.yml)
 
-A Java command-line calculator supporting basic arithmetic, power, and modulo operations, with input validation, exception handling, and 100% unit test coverage.
-
-- **GitHub ID**: Ling-Qingyang
-- **Environment**: JDK 17, Maven 3.8+
-- **Dependencies**: Apache Commons Lang 3.14.0
-- **Testing Libraries**: JUnit 5 (5.10.0), AssertJ (3.25.3), JaCoCo (0.8.11)
+A modular, verified Java CLI Calculator with robust error handling, automated Maven build automation, JUnit 5 unit test suites, JaCoCo code coverage, and continuous integration via GitHub Actions.
 
 ---
 
-## Documentation Index
-
-- [Lab 4 Technical Report (English)](docs/LAB4_REPORT_EN.md): Contains requirement matrices, test suite design, and JaCoCo coverage metrics.
-- [Lab 4 实验报告 (中文)](docs/LAB4_REPORT.md): 包含需求实现对照表、测试用例分布与 JaCoCo 覆盖率统计。
-- [Screenshots](docs/screenshots/): Contains test execution, error handling, and coverage screenshots.
-
----
-
-## Features
-
-- **Operators**: `+`, `-`, `*`, `/`, `^`, `%`
-- **Exception Handling**:
-  - Blank or null operands: Throws `IllegalArgumentException("input is blank")`
-  - Blank or null operator: Throws `IllegalArgumentException("operator is blank")`
-  - Non-numeric input: Catches `NumberFormatException` and throws `IllegalArgumentException`
-  - Zero division or modulo by zero (`0`, `0.0`, `-0.0`): Throws `IllegalArgumentException("division by zero")`
-  - Unknown operator: Throws `IllegalArgumentException("unknown operator: ...")`
+## 1. Features
+- **Core Operations**: Addition (`+`), Subtraction (`-`), Multiplication (`*`), Division (`/`), Exponentiation (`^`), and Modulo (`%`).
+- **Defensive Input Handling**: Robust validation against blank inputs, non-numeric strings, and explicit division-by-zero prevention (`IllegalArgumentException`).
+- **Continuous Integration**: Automated GitHub Actions pipeline (`ci-calculator.yml`) validating builds against JDK 17 and JDK 21 matrices on every commit and pull request.
 
 ---
 
-## Getting Started
+## 2. Requirements & Environment
+- **Java**: JDK 17+ (JDK 17 LTS or JDK 21 LTS recommended)
+- **Build Tool**: Apache Maven 3.8+
+- **Test Framework**: JUnit Jupiter 5.10.0 & AssertJ 3.25.3
 
-### 1. Run Tests and Generate Coverage Report
+---
+
+## 3. Local Build & Test Commands
+
 ```bash
-mvn clean test
-```
-JaCoCo HTML coverage report path: `target/site/jacoco/index.html`.
+# Clean previous build artifacts and compile
+mvn clean compile
 
-### 2. Package and Execute
-```bash
-mvn clean package
-java -jar target/calculator-1.0.jar 2 + 2
-# Output: 4.0
+# Execute all JUnit 5 test cases and generate JaCoCo coverage reports
+mvn test
+
+# Package standalone shaded executable JAR
+mvn package
+
+# Run the packaged executable
+java -jar target/calculator-1.0.jar 15 / 3
 ```
 
 ---
 
-## Test Statistics
-
-- **Total Test Cases**: 32 (Passed: 32, Failed: 0, Errors: 0)
-- **JaCoCo Coverage**:
-  - `Calculator.java`: 100% Line Coverage, 100% Branch Coverage
-  - `App.java`: 100% Line Coverage, 100% Branch Coverage
-- **Assertion Library**: AssertJ (`assertThat`, `assertThatThrownBy`)
+## 4. Continuous Integration Pipeline
+The project utilizes GitHub Actions to enforce continuous quality gates:
+1. **Trigger Events**: `push` and `pull_request` against `main`.
+2. **Matrix Build**: Parallel execution on Ubuntu runners with OpenJDK 17 and OpenJDK 21.
+3. **Caching**: Automated Maven `.m2` repository caching for fast build execution.
+4. **Automated Verification**: Automatic execution of `mvn clean compile` and `mvn test`.

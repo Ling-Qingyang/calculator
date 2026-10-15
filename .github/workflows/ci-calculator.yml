@@ -1,0 +1,50 @@
+# ==============================================================================
+# Pipeline Name: Automated CI Workflow for Java Calculator Project
+# Purpose: Compile Java source, cache dependencies, and execute JUnit 5 tests
+# Trigger: Automated on any push or pull request targeting the 'main' branch
+# ==============================================================================
+
+name: Calculator CI Pipeline
+
+# Event Triggers: execute pipeline on push or PR against main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Define execution jobs
+jobs:
+  build-and-test:
+    name: Build & Test (JDK ${{ matrix.java-version }})
+    # Host operating system environment: standard Ubuntu runner
+    runs-on: ubuntu-latest
+
+    # Build matrix to ensure cross-version compatibility across LTS JDKs
+    strategy:
+      matrix:
+        java-version: ['17', '21']
+      fail-fast: false
+
+    steps:
+      # Step 1: Check out the repository source code to the runner workspace
+      - name: Checkout Repository Source
+        uses: actions/checkout@v4
+
+      # Step 2: Install and configure Java Development Kit with dependency caching
+      - name: Set up Java Development Kit (JDK ${{ matrix.java-version }})
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven' # Enable automatic caching for Maven dependencies (~/.m2)
+
+      # Step 3: Compile source code to verify syntax and clean previous build artifacts
+      - name: Compile Java Source
+        run: mvn clean compile --batch-mode
+
+      # Step 4: Execute full JUnit 5 test suite and generate JaCoCo coverage
+      - name: Run JUnit 5 Unit Tests
+        run: mvn test --batch-mode

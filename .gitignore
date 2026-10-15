@@ -1,18 +1,33 @@
-# Maven build output
 target/
-dependency-reduced-pom.xml
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# IDE and Editor files
-.idea/
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
-.vscode/
-.settings/
-.project/
-.classpath/
+*.ipr
 
-# OS generated files
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradletask/
+
+### VS Code ###
+.vscode/
+
+### OS files ###
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
