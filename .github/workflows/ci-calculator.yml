@@ -1,6 +1,6 @@
 # ==============================================================================
-# Pipeline Name: Automated CI Workflow for Java Calculator Project
-# Purpose: Compile Java source, cache dependencies, and execute JUnit 5 tests
+# Pipeline Name: Automated CI/CD Workflow for Java Calculator Project
+# Purpose: Compile Java source, run JUnit 5 tests, and build/push Docker image
 # Trigger: Automated on any push or pull request targeting the 'main' branch
 # ==============================================================================
 
@@ -17,34 +17,69 @@ on:
 
 # Define execution jobs
 jobs:
+  # Job 1: Build & Unit Test Stage (Preserved from Lab 5)
   build-and-test:
     name: Build & Test (JDK ${{ matrix.java-version }})
-    # Host operating system environment: standard Ubuntu runner
     runs-on: ubuntu-latest
 
-    # Build matrix to ensure cross-version compatibility across LTS JDKs
     strategy:
       matrix:
         java-version: ['17', '21']
       fail-fast: false
 
     steps:
-      # Step 1: Check out the repository source code to the runner workspace
       - name: Checkout Repository Source
         uses: actions/checkout@v4
 
-      # Step 2: Install and configure Java Development Kit with dependency caching
       - name: Set up Java Development Kit (JDK ${{ matrix.java-version }})
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
-          cache: 'maven' # Enable automatic caching for Maven dependencies (~/.m2)
+          cache: 'maven'
 
-      # Step 3: Compile source code to verify syntax and clean previous build artifacts
       - name: Compile Java Source
         run: mvn clean compile --batch-mode
 
-      # Step 4: Execute full JUnit 5 test suite and generate JaCoCo coverage
       - name: Run JUnit 5 Unit Tests
         run: mvn test --batch-mode
+
+  # Job 2: Docker Containerization Stage (Lab 6 Extension)
+  docker-build:
+    name: Build & Push Docker Image
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout Repository Source
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image Locally
+        run: |
+          docker build -t calculator:latest .
+
+      - name: Verify Container Execution
+        run: |
+          echo "Verifying default entrypoint execution:"
+          docker run --rm calculator:latest
+          echo "Verifying arithmetic addition (10 + 20):"
+          docker run --rm calculator:latest 10 + 20
+          echo "Verifying arithmetic division (100 / 4):"
+          docker run --rm calculator:latest 100 / 4
+
+      - name: Tag and Push Docker Image to Docker Hub
+        run: |
+          docker tag calculator:latest ${{ secrets.DOCKERHUB_USERNAME }}/calculator:lab6
+          docker tag calculator:latest ${{ secrets.DOCKERHUB_USERNAME }}/calculator:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/calculator:lab6
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/calculator:latest

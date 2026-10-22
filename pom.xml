@@ -16,6 +16,21 @@
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>aliyunmaven</id>
+      <name>aliyun maven</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>aliyunmaven-plugin</id>
+      <name>aliyun maven plugin</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
