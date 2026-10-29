@@ -1,0 +1,440 @@
+:root {
+    /* Pure Monochrome & Stark Black/White Palette (Zero Color) */
+    --bg-base: #000000;
+    --bg-surface: #0c0c0c;
+    --bg-card: #121212;
+    --border-color: rgba(255, 255, 255, 0.12);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-glow: rgba(255, 255, 255, 0.35);
+    
+    --text-primary: #ffffff;
+    --text-secondary: #d4d4d8;
+    --text-muted: #71717a;
+
+    --btn-num-bg: #1c1c1e;
+    --btn-num-hover: #2c2c2e;
+    --btn-num-text: #ffffff;
+    
+    --btn-op-bg: #27272a;
+    --btn-op-hover: #3f3f46;
+    --btn-op-text: #ffffff;
+    
+    --btn-action-bg: #27272a;
+    --btn-action-hover: #3f3f46;
+    --btn-action-text: #e4e4e7;
+    
+    --btn-equals-bg: #ffffff;
+    --btn-equals-hover: #e4e4e7;
+    --btn-equals-text: #000000;
+
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #000000;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 960px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 32px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-badge {
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+}
+
+.brand-info h1 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.brand-info .subtext {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* Status Indicator */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #18181b;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    padding: 8px 16px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #52525b;
+    box-shadow: 0 0 4px #52525b;
+    transition: background 0.25s, box-shadow 0.25s;
+}
+
+.status-dot.online {
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+.status-dot.error {
+    background: #71717a;
+    box-shadow: 0 0 6px #71717a;
+}
+
+.status-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.status-route {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+/* Main Content Grid */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Calculator Card */
+.calculator-card {
+    background: #09090b;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.calc-display {
+    background: #000000;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: right;
+    margin-bottom: 20px;
+    min-height: 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.display-secondary {
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    min-height: 20px;
+    word-break: break-all;
+}
+
+.display-primary {
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    word-break: break-all;
+}
+
+.display-primary.loading {
+    color: #a1a1aa;
+}
+
+.display-primary.error {
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+/* Keypad Grid */
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    appearance: none;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: var(--font-sans);
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    user-select: none;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-num {
+    background: var(--btn-num-bg);
+    color: var(--btn-num-text);
+}
+
+.btn-num:hover {
+    background: var(--btn-num-hover);
+}
+
+.btn-op {
+    background: var(--btn-op-bg);
+    color: var(--btn-op-text);
+}
+
+.btn-op:hover {
+    background: var(--btn-op-hover);
+}
+
+.btn-action {
+    background: var(--btn-action-bg);
+    color: var(--btn-action-text);
+}
+
+.btn-action:hover {
+    background: var(--btn-action-hover);
+}
+
+.btn-equals {
+    background: var(--btn-equals-bg);
+    color: var(--btn-equals-text);
+    font-weight: 700;
+    border-color: #ffffff;
+}
+
+.btn-equals:hover {
+    background: var(--btn-equals-hover);
+}
+
+/* Info Section */
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    background: #09090b;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.card-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.clear-history-btn {
+    margin-left: auto;
+    background: #18181b;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.clear-history-btn:hover {
+    background: #27272a;
+    color: #ffffff;
+}
+
+/* Topology Diagram */
+.topology-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #000000;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #18181b;
+    border: 1px solid var(--border-color);
+}
+
+.web-node {
+    border-color: #ffffff;
+}
+
+.backend-node {
+    border-color: #a1a1aa;
+}
+
+.node-tag {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.node-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 2px 0;
+    color: #ffffff;
+}
+
+.node-port {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: #d4d4d8;
+}
+
+.flow-arrow {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.flow-docker {
+    color: #ffffff;
+}
+
+.topology-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.topology-note code {
+    background: #18181b;
+    border: 1px solid var(--border-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    color: #ffffff;
+}
+
+/* History List */
+.history-list {
+    max-height: 240px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #000000;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.history-expr {
+    color: var(--text-secondary);
+}
+
+.history-res {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.history-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 24px 0;
+}
+
+/* Footer */
+.app-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+    margin-top: 32px;
+}
+
+.app-footer strong {
+    color: #ffffff;
+}

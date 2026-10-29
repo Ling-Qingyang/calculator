@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Container Calculator | Lab 7 Docker Compose</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="logo-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="2" width="16" height="20" rx="3"></rect>
+                        <line x1="8" y1="6" x2="16" y2="6"></line>
+                        <line x1="16" y1="14" x2="16" y2="18"></line>
+                        <path d="M16 10h.01"></path>
+                        <path d="M12 10h.01"></path>
+                        <path d="M8 10h.01"></path>
+                        <path d="M12 14h.01"></path>
+                        <path d="M8 14h.01"></path>
+                        <path d="M12 18h.01"></path>
+                        <path d="M8 18h.01"></path>
+                    </svg>
+                </div>
+                <div class="brand-info">
+                    <h1>Multi-Container Calculator</h1>
+                    <span class="subtext">Software Development Tools • Lab 7 Docker Compose</span>
+                </div>
+            </div>
+
+            <!-- Inter-service connection status badge -->
+            <div class="status-indicator" id="status-card">
+                <span class="status-dot" id="status-dot"></span>
+                <div class="status-text">
+                    <span class="status-title" id="status-title">Backend: Connecting...</span>
+                    <span class="status-route">web:80 ➔ backend:8000</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout: Calculator & Info Cards -->
+        <main class="main-content">
+            <!-- Left: Calculator Unit -->
+            <section class="calc-section">
+                <div class="calculator-card">
+                    <!-- Display Screen -->
+                    <div class="calc-display">
+                        <div class="display-secondary" id="display-history">Ready</div>
+                        <div class="display-primary" id="display-main">0</div>
+                    </div>
+
+                    <!-- Keypad Grid -->
+                    <div class="calc-grid">
+                        <!-- Row 1 -->
+                        <button class="btn btn-action" data-action="clear" id="btn-clear">AC</button>
+                        <button class="btn btn-action" data-action="delete" id="btn-delete">DEL</button>
+                        <button class="btn btn-op" data-op="%" title="Modulo">%</button>
+                        <button class="btn btn-op" data-op="/" title="Division">÷</button>
+
+                        <!-- Row 2 -->
+                        <button class="btn btn-num" data-num="7">7</button>
+                        <button class="btn btn-num" data-num="8">8</button>
+                        <button class="btn btn-num" data-num="9">9</button>
+                        <button class="btn btn-op" data-op="*" title="Multiplication">×</button>
+
+                        <!-- Row 3 -->
+                        <button class="btn btn-num" data-num="4">4</button>
+                        <button class="btn btn-num" data-num="5">5</button>
+                        <button class="btn btn-num" data-num="6">6</button>
+                        <button class="btn btn-op" data-op="-" title="Subtraction">−</button>
+
+                        <!-- Row 4 -->
+                        <button class="btn btn-num" data-num="1">1</button>
+                        <button class="btn btn-num" data-num="2">2</button>
+                        <button class="btn btn-num" data-num="3">3</button>
+                        <button class="btn btn-op" data-op="+" title="Addition">+</button>
+
+                        <!-- Row 5 -->
+                        <button class="btn btn-action" data-action="negate">±</button>
+                        <button class="btn btn-num" data-num="0">0</button>
+                        <button class="btn btn-num" data-num=".">.</button>
+                        <button class="btn btn-equals" data-action="equals" id="btn-equals">=</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Architecture & Execution Stream -->
+            <section class="info-section">
+                <!-- Topology Card -->
+                <div class="card topology-card">
+                    <div class="card-header">
+                        <span class="icon">🌐</span>
+                        <h3>Docker Compose Architecture</h3>
+                    </div>
+                    <div class="topology-diagram">
+                        <div class="node host-node">
+                            <span class="node-tag">Client</span>
+                            <span class="node-name">Browser</span>
+                            <span class="node-port">:8080</span>
+                        </div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="node web-node">
+                            <span class="node-tag">Service: web</span>
+                            <span class="node-name">Nginx Proxy</span>
+                            <span class="node-port">:80</span>
+                        </div>
+                        <div class="flow-arrow flow-docker">➔</div>
+                        <div class="node backend-node">
+                            <span class="node-tag">Service: backend</span>
+                            <span class="node-name">Java API</span>
+                            <span class="node-port">:8000</span>
+                        </div>
+                    </div>
+                    <p class="topology-note">
+                        Web service acts as a reverse proxy forwarding <code>/api/*</code> to <code>http://backend:8000</code> resolved dynamically via Docker internal DNS.
+                    </p>
+                </div>
+
+                <!-- History Log Card -->
+                <div class="card history-card">
+                    <div class="card-header">
+                        <span class="icon">📜</span>
+                        <h3>Calculation History</h3>
+                        <button class="clear-history-btn" id="btn-clear-history">Clear</button>
+                    </div>
+                    <div class="history-list" id="history-list">
+                        <div class="empty-state">No calculations executed yet</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span>Author: <strong>Ling Qingyang</strong> (Student ID: 202583930013)</span>
+            <span>Course: Software Development Tools • Harbin Institute of Technology</span>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

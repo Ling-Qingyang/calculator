@@ -1,148 +1,73 @@
-# Java CLI Calculator — Software Development Tools (Labs 3 – 6)
+# Multi-Container Calculator — Software Development Tools (Labs 3 – 7)
 
 [English](README.md) | [中文说明](README_zh.md)
 
 [![Calculator CI/CD Pipeline](https://github.com/Ling-Qingyang/calculator/actions/workflows/ci-calculator.yml/badge.svg)](https://github.com/Ling-Qingyang/calculator/actions/workflows/ci-calculator.yml)
 [![Docker Hub Image](https://img.shields.io/badge/docker%20hub-leon111w%2Fcalculator%3Alab6-blue?logo=docker)](https://hub.docker.com/r/leon111w/calculator)
 [![Java Version](https://img.shields.io/badge/Java-17%20%7C%2021-orange?logo=openjdk)](https://adoptium.net/)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](target/site/jacoco/index.html)
+[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-v2-blue?logo=docker)](docker-compose.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An enterprise-grade, containerized Java CLI Calculator application developed throughout the **Software Development Tools** course curriculum at **Waterford Institute, NUIST**. This repository showcases an end-to-end modern software engineering lifecycle: from initial modular architecture and unit testing to continuous integration (CI) and containerized continuous delivery (CD).
+An enterprise-grade, multi-container distributed Calculator application developed throughout the **Software Development Tools** course curriculum at **Waterford Institute, NUIST**. This repository showcases an end-to-end modern software engineering lifecycle: from initial modular architecture and unit testing to continuous integration (CI), containerized continuous delivery (CD), and multi-container orchestration with Docker Compose.
 
 - **Student Author**: Ling Qingyang (ID: 202583930013)
 - **Institution**: Waterford Institute, Software Engineering (Class SE 01, Grade 2025)
 - **Instructor**: Prof. Yuanfang Zhang
-- **Public Container Registry**: [Docker Hub - leon111w/calculator](https://hub.docker.com/r/leon111w/calculator)
+- **Source Repository**: [https://github.com/Ling-Qingyang/calculator](https://github.com/Ling-Qingyang/calculator)
 
 ---
 
 ## 1. Laboratory Evolution & Engineering Milestones
 
-This repository represents the cumulative outcome of four progressive laboratory assignments:
-
 | Lab Milestone | Focus Area | Key Architectural & Engineering Deliverables |
 | :--- | :--- | :--- |
-| **Lab 3: Core Architecture & CLI** | Java CLI Tooling | • Core arithmetic engine supporting `+`, `-`, `*`, `/`, `^`, `%`<br>• Robust defensive input sanitization and division-by-zero prevention<br>• Maven project scaffolding and Maven Shade Plugin uber-jar packaging |
-| **Lab 4: Automated Testing & Coverage** | Quality Assurance | • 32 comprehensive unit test cases implemented with JUnit Jupiter 5 & AssertJ<br>• Edge cases, blank strings, non-numeric strings, and error condition coverage<br>• JaCoCo code coverage integration achieving **100% line & branch coverage** |
-| **Lab 5: Continuous Integration (CI)** | Cloud CI Pipeline | • GitHub Actions automated CI workflow (`.github/workflows/ci-calculator.yml`)<br>• Test matrix validation executing concurrently across OpenJDK 17 & OpenJDK 21<br>• Maven dependency caching and dynamic status badge integration |
-| **Lab 6: Containerization & Delivery (CD)** | Docker & Cloud CD | • Enterprise multi-stage `Dockerfile` (`maven:3.8-openjdk-17` → `eclipse-temurin:17-jre-alpine`)<br>• Image footprint optimization from 1.26 GB to **257 MB** (nearly 80% reduction)<br>• CI/CD pipeline extension: automated container build, verification, and push to Docker Hub |
+| **Lab 3: Core Architecture & CLI** | Java CLI Tooling | • Core arithmetic engine supporting `+`, `-`, `*`, `/`, `^`, `%`<br>• Defensive input sanitization and division-by-zero prevention<br>• Maven project scaffolding and Maven Shade Plugin packaging |
+| **Lab 4: Automated Testing & Coverage** | Quality Assurance | • 32 comprehensive unit test cases implemented with JUnit 5 & AssertJ<br>• Boundary values and error condition verification<br>• JaCoCo code coverage integration achieving **100% line & branch coverage** |
+| **Lab 5: Continuous Integration (CI)** | Cloud CI Pipeline | • GitHub Actions automated CI workflow (`ci-calculator.yml`)<br>• Test matrix validation executing across OpenJDK 17 & OpenJDK 21<br>• Automated build status badges |
+| **Lab 6: Containerization & Delivery (CD)** | Docker & Cloud CD | • Multi-stage `Dockerfile` (`maven:3.8-openjdk-17` → `eclipse-temurin:17-jre-alpine`)<br>• Image footprint optimization from 1.26 GB to **257 MB**<br>• Automated container build, verification, and publish to Docker Hub |
+| **Lab 7: Multi-Container Orchestration** | Docker Compose Architecture | • Directory refactoring into independent `backend/` and `web/` microservices<br>• Nginx reverse proxy routing web requests to internal service `backend:8000`<br>• `docker-compose.yml` multi-container lifecycle management & CI pipeline validation |
 
 ---
 
-## 2. Technical Stack & Environment
-
-- **Programming Language**: Java 17 LTS (Matrix tested on Java 21 LTS)
-- **Build & Packaging**: Apache Maven 3.8.8, Maven Shade Plugin 3.5.1
-- **Testing & Assertions**: JUnit 5 (Jupiter 5.10.0), AssertJ 3.25.3
-- **Coverage Analysis**: JaCoCo 0.8.11
-- **Container Engine**: Docker Desktop 4.50.0 / Docker Engine 28.5.1
-- **Base Images**: `maven:3.8-openjdk-17` (Stage 1) & `eclipse-temurin:17-jre-alpine` (Stage 2)
-- **CI/CD Platform**: GitHub Actions (Ubuntu 24.04 LTS hosted runners)
-- **Artifact Registry**: Docker Hub (`leon111w/calculator:lab6` and `latest`)
-
----
-
-## 3. Quick Start: Docker Execution (Lab 6)
-
-### Option A: Pull Pre-built Image from Docker Hub
-```bash
-# 1. Pull the official verified Lab 6 image
-docker pull leon111w/calculator:lab6
-
-# 2. Run with default fallback parameters (10 + 20)
-docker run --rm leon111w/calculator:lab6
-
-# 3. Perform arbitrary calculations
-docker run --rm leon111w/calculator:lab6 15 + 27       # Addition -> 42.0
-docker run --rm leon111w/calculator:lab6 100 - 35      # Subtraction -> 65.0
-docker run --rm leon111w/calculator:lab6 8 "*" 9       # Multiplication -> 72.0
-docker run --rm leon111w/calculator:lab6 144 / 12      # Division -> 12.0
-docker run --rm leon111w/calculator:lab6 2 "^" 8       # Exponentiation -> 256.0
-docker run --rm leon111w/calculator:lab6 17 "%" 5      # Modulo -> 2.0
-docker run --rm leon111w/calculator:lab6 10 / 0        # Division by zero trap -> IllegalArgumentException
-```
-
-### Option B: Build and Run Locally
-```bash
-# 1. Build multi-stage Docker image locally
-docker build -t calculator:v1 .
-
-# 2. Inspect compact image footprint (~257 MB)
-docker images | grep calculator
-
-# 3. Execute local container
-docker run --rm calculator:v1 50 / 5
-```
-
----
-
-## 4. Local Maven Development (Labs 3 & 4)
-
-```bash
-# 1. Clean and compile source code
-mvn clean compile
-
-# 2. Execute all 32 unit tests with JaCoCo coverage report generation
-mvn test
-
-# 3. Inspect generated JaCoCo coverage report in browser
-# Report path: target/site/jacoco/index.html
-
-# 4. Package executable shaded Fat JAR
-mvn package
-
-# 5. Run packaged JAR via local JVM
-java -jar target/calculator-1.0.jar 42 "*" 2
-```
-
----
-
-## 5. Automated CI/CD Workflow (`.github/workflows/ci-calculator.yml`)
-
-The repository includes a two-stage automated pipeline that executes on every push to `main` and all pull requests:
-
-```mermaid
-graph LR
-    A[Git Push to main] --> B[Job 1: build-and-test]
-    B --> B1[JDK 17 Matrix Test]
-    B --> B2[JDK 21 Matrix Test]
-    B1 --> C{All Tests Passed?}
-    B2 --> C
-    C -->|Yes| D[Job 2: docker-build]
-    D --> D1[Set up Docker Buildx]
-    D1 --> D2[Authenticate to Docker Hub via PAT]
-    D2 --> D3[Build calculator:latest Image]
-    D3 --> D4[Verify CLI Math inside Container]
-    D4 --> D5[Push leon111w/calculator:lab6 & :latest]
-```
-
-1. **Job 1 (`build-and-test`)**: Matrix validation on Ubuntu runners for JDK 17 & 21 with automatic Maven dependency caching.
-2. **Job 2 (`docker-build`)**: Downstream delivery job that activates strictly when tests pass on the `main` branch:
-   - Provisions Docker Buildx.
-   - Securely authenticates via encrypted repository secrets (`DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`).
-   - Builds and locally evaluates container calculation sanity.
-   - Tags and publishes versioned images (`:lab6` and `:latest`) to Docker Hub.
-
----
-
-## 6. Project Directory Layout
+## 2. Multi-Container Architecture (Lab 7)
 
 ```text
-calculator/
-├── .github/
-│   └── workflows/
-│       └── ci-calculator.yml         # Lab 5 & 6 Unified CI/CD Pipeline
-├── src/
-│   ├── main/java/com/lingqingyang/
-│   │   ├── App.java                 # CLI Entrypoint & Argument Parser (Lab 3)
-│   │   └── Calculator.java          # Core Arithmetic Engine (Lab 3)
-│   └── test/java/com/lingqingyang/
-│       ├── AppTest.java             # CLI Parameter & Exception Tests (Lab 4)
-│       └── CalculatorTest.java      # Precision & Edge Case Unit Tests (Lab 4)
-├── Dockerfile                        # Multi-Stage Annotated Dockerfile (Lab 6)
-├── pom.xml                           # Maven POM with Aliyun Mirrors & Plugins
-├── README.md                         # Full English Documentation (Labs 3-6)
-├── README_zh.md                      # 中文完整项目说明 (Labs 3-6)
-└── LICENSE                           # MIT License
++-------------------+              +----------------------+              +-------------------------+
+|   Host Browser    |   HTTP:8080  |    Web Container     |  Docker DNS  |    Backend Container    |
+| (127.0.0.1:8080)  | ===========> |   (Nginx :80 Proxy)  | ===========> | (Java REST API :8000)   |
++-------------------+              +----------------------+  http://     +-------------------------+
+                                                              backend:8000
+```
+
+1. **`web` Service**: Minimal Alpine Nginx container hosting responsive static assets and reverse-proxying `/api/*` to `http://backend:8000`.
+2. **`backend` Service**: High-performance Java 17 REST API microservice exposing calculation endpoints on port 8000.
+3. **Bridge Network (`calc-network`)**: Dedicated bridge network providing automatic internal DNS service name resolution.
+
+---
+
+## 3. Quick Start with Docker Compose
+
+### Start All Services
+```bash
+docker compose up -d --build
+```
+
+### Check Service Status
+```bash
+docker compose ps
+```
+
+### Inspect Logs
+```bash
+docker compose logs -f
+```
+
+### Access Application
+- Web Calculator UI: [http://127.0.0.1:8080](http://127.0.0.1:8080)
+- Backend Direct Health Endpoint: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+- Backend Direct Calculation API: `http://127.0.0.1:8000/api/calculate?a=25&op=%2A&b=4`
+
+### Stop and Clean Up
+```bash
+docker compose down
 ```

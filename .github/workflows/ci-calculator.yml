@@ -1,12 +1,11 @@
 # ==============================================================================
-# Pipeline Name: Automated CI/CD Workflow for Java Calculator Project
-# Purpose: Compile Java source, run JUnit 5 tests, and build/push Docker image
+# Pipeline Name: Automated Multi-Container CI/CD Workflow for Calculator
+# Purpose: Compile Java source, run JUnit 5 tests, and validate Docker Compose build
 # Trigger: Automated on any push or pull request targeting the 'main' branch
 # ==============================================================================
 
-name: Calculator CI Pipeline
+name: Calculator Multi-Container CI Pipeline
 
-# Event Triggers: execute pipeline on push or PR against main branch
 on:
   push:
     branches:
@@ -15,11 +14,12 @@ on:
     branches:
       - main
 
-# Define execution jobs
 jobs:
-  # Job 1: Build & Unit Test Stage (Preserved from Lab 5)
+  # ----------------------------------------------------------------------------
+  # Job 1: Build & Unit Test Stage (Java Backend)
+  # ----------------------------------------------------------------------------
   build-and-test:
-    name: Build & Test (JDK ${{ matrix.java-version }})
+    name: Backend Build & Test (JDK ${{ matrix.java-version }})
     runs-on: ubuntu-latest
 
     strategy:
@@ -38,18 +38,21 @@ jobs:
           java-version: ${{ matrix.java-version }}
           cache: 'maven'
 
-      - name: Compile Java Source
+      - name: Compile Backend Java Source
+        working-directory: backend
         run: mvn clean compile --batch-mode
 
       - name: Run JUnit 5 Unit Tests
+        working-directory: backend
         run: mvn test --batch-mode
 
-  # Job 2: Docker Containerization Stage (Lab 6 Extension)
-  docker-build:
-    name: Build & Push Docker Image
+  # ----------------------------------------------------------------------------
+  # Job 2: Docker Compose Multi-Container Build Validation (Lab 7 Extension)
+  # ----------------------------------------------------------------------------
+  compose-build-and-verify:
+    name: Docker Compose Build & Smoke Verification
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: Checkout Repository Source
@@ -58,28 +61,41 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build Docker Image Locally
+      - name: Verify Compose File Syntax and Configuration
         run: |
-          docker build -t calculator:latest .
+          echo "Validating docker-compose.yml configuration syntax..."
+          docker compose config
 
-      - name: Verify Container Execution
+      - name: Build All Services via Docker Compose
         run: |
-          echo "Verifying default entrypoint execution:"
-          docker run --rm calculator:latest
-          echo "Verifying arithmetic addition (10 + 20):"
-          docker run --rm calculator:latest 10 + 20
-          echo "Verifying arithmetic division (100 / 4):"
-          docker run --rm calculator:latest 100 / 4
+          echo "Building backend and web container images..."
+          docker compose build
 
-      - name: Tag and Push Docker Image to Docker Hub
+      - name: Ephemeral Smoke Test Execution
         run: |
-          docker tag calculator:latest ${{ secrets.DOCKERHUB_USERNAME }}/calculator:lab6
-          docker tag calculator:latest ${{ secrets.DOCKERHUB_USERNAME }}/calculator:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/calculator:lab6
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/calculator:latest
+          echo "Starting multi-container stack in detached mode..."
+          docker compose up -d
+          
+          echo "Inspecting running services status..."
+          docker compose ps
+          
+          echo "Verifying backend health endpoint via web reverse proxy..."
+          for i in {1..15}; do
+            if curl -s http://127.0.0.1:8080/health | grep -q "UP"; then
+              echo "Healthcheck PASSED on attempt $i!"
+              break
+            fi
+            echo "Waiting for service to be healthy... ($i/15)"
+            sleep 2
+          done
+
+          echo "Verifying inter-service arithmetic calculation API (25 * 4 = 100)..."
+          CALC_RES=$(curl -s "http://127.0.0.1:8080/api/calculate?a=25&op=%2A&b=4")
+          echo "API Response: $CALC_RES"
+          echo "$CALC_RES" | grep -q "100"
+
+          echo "Inspecting container logs..."
+          docker compose logs --tail 20
+
+          echo "Stopping and tearing down compose stack..."
+          docker compose down
